@@ -1,0 +1,63 @@
+﻿@page "/fetchdata"
+
+<PageTitle>Weather forecast</PageTitle>
+
+@using Exam.Web.Data
+@using Exam.ApplicationCore.Domain
+@inject UtilisateurService UtilisateurService
+
+<h1>Utilisateurs</h1>
+
+@* Display users here and provide options to add, update, and delete *@
+
+@if (utilisateurs == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var utilisateur in utilisateurs)
+            {
+                <tr>
+                    <td>@utilisateur.Nom</td>
+                    <td>@utilisateur.Email</td>
+                    <td>@utilisateur.Username</td>
+                    <td>
+                        <button @onclick="() => EditUtilisateur(utilisateur)">Edit</button>
+                        <button @onclick="() => DeleteUtilisateur(utilisateur.UtilisateurId)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<Utilisateur> utilisateurs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        utilisateurs = await UtilisateurService.GetUtilisateursAsync();
+    }
+
+    private void EditUtilisateur(Utilisateur utilisateur)
+    {
+        // Navigate to the edit page or show an edit form
+    }
+
+    private async Task DeleteUtilisateur(int id)
+    {
+        await UtilisateurService.DeleteUtilisateurAsync(id);
+        utilisateurs = await UtilisateurService.GetUtilisateursAsync();
+    }
+}
